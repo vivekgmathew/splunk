@@ -89,7 +89,7 @@
       <chart>
         <search>
           <query>source="C:\\workspace\\python\\logging\\logs.log" host="vivek" index="pfd" sourcetype="pfd" "src=pfd" | stats count as tc |  appendcols [search source="C:\\workspace\\python\\logging\\logs.log" host="vivek" index="pfd" sourcetype="pfd" "src=pfd" "status=success" | stats count as sc] | eval pc = tc - sc | table sc pc | rename sc as "SUCCESS" pc as "PENDING" | transpose</query>
-           <earliest>@d</earliest>
+          <earliest>@d</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
         </search>
@@ -125,6 +125,25 @@
         <option name="trellis.scales.shared">1</option>
         <option name="trellis.size">medium</option>
       </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Pending PFD Dag Details</title>
+      <table>
+        <search>
+          <query>source="C:\\workspace\\python\\logging\\logs.log" host="vivek" index="pfd" sourcetype="pfd" "pfd_src=pfd" NOT "pfd_dag_status=success" "pfd_task_status=success" | sort - _time | dedup 1 pfd_dag | table pfd_dag pfd_task | rename pfd_dag as "DAG NAME" pfd_task as "LAST SUCCEDED TASK"</query>
+          <earliest>@d</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
     </panel>
   </row>
 </dashboard>

@@ -17,8 +17,12 @@ if __name__ == '__main__':
                         )
     logger = logging.getLogger()
 
-    logger.info("This is an info message src=pfd, dag=my_dag, status=success")
-    logger.info("This is another information message src=pfd, dag=my_dag")
+
+    #logger.info("This is an info message pfd_src=pfd, pfd_dag=my_dag, pfd_dag_status=success")
+    #logger.info("Task one of your_dag completed pfd_src=pfd, pfd_dag=your_dag, pfd_task=task_one, pfd_task_status=success")
+    logger.info(
+        "Task one of your_dag completed pfd_src=pfd, pfd_dag=new_dag, pfd_task=task_three, pfd_task_status=success")
+
 
     for i in range(10):
         logger.info("Some random information")
