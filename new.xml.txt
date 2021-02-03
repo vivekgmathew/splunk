@@ -1,0 +1,33 @@
+<dashboard>
+  <label>Settlement Files Status</label>
+  <row>
+    <panel>
+      <html depends="$alwaysHideCSSStyle$">
+        <style>
+        
+        
+           .under {
+          font-size: 15px !important;
+          fill: rgb(255,0,0)!important;
+       }
+        </style>
+        </html>
+      <single id="test">
+        <search>
+          <query>| stats count as mytext | eval mytext = "Menards Settlement File"</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="height">50</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="colorBy">value</option>
+            <option name="colorMode">block</option>
+            <option name="useColors">0</option>
+            <option name="useThousandSeparators">1</option>
+            <option name="classField">under</option>
+            <option name="field">state</option>
+      </single>
+    </panel>
+  </row>
+</dashboard>
