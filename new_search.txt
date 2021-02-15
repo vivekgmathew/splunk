@@ -1,0 +1,12 @@
+// Panel one search
+// ------------------
+| inputlookup lkp.csv  
+|  table partner
+| appendcols 
+    [| inputlookup lkp.csv  
+| table  partner 
+| map  search="search index=test dag_id="*$partner$*" status="failure" | lookup daglkp.csv dag_id output file | where len(file) > 0 | stats count as "failure_count""] 
+    | appendcols  
+        [| inputlookup lkp.csv  
+| table  partner 
+| map  search="search index=test dag_id="*$partner$*" status="success" | lookup daglkp.csv dag_id output file | where len(file) > 0 | stats count as "success_count""]
