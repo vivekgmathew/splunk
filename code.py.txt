@@ -1,0 +1,34 @@
+from awsglue.context import GlueContext
+from pyspark.context import SparkContext
+from delta.tables import DeltaTable
+from pyspark.sql.functions import when,lit,col
+from datetime import datetime
+
+
+# create/get spark + glue context
+spark = GlueContext(SparkContext.getOrCreate()).sparkSession
+
+# folder within S3 for the delta table
+s3_path = f"s3://aws-glue-pr/athena_part/"
+dt = datetime.now().strftime('%Y-%m-%d')
+
+
+
+# initially prepopulate the table with some data
+users_initial = [
+    { 'user_id': 1, 'name': 'Gina Burch', 'gender': 'f' },
+    { 'user_id': 2, 'name': 'Francesco Coates', 'gender': 'm' },
+    { 'user_id': 3, 'name': 'Saeed Wicks', 'gender': 'm' },
+    { 'user_id': 4, 'name': 'Raisa Oconnell', 'gender': 'f' },
+    { 'user_id': 5, 'name': 'Josh Copeland', 'gender': 'm' },
+    { 'user_id': 6, 'name': 'Kaiden Williamson', 'gender': 'm' }
+]
+
+spark.createDataFrame(users_initial).withColumn("load_dt",lit(dt)) \
+  .write.partitionBy('load_dt').format("delta").mode("overwrite").save(s3_path)
+
+# load and print results via Spark API
+print("DF reading after initial load:")
+spark.read.format("delta").load(s3_path).orderBy("user_id").show()
+deltaTable = DeltaTable.forPath(spark, s3_path)
+deltaTable.generate("symlink_format_manifest")
